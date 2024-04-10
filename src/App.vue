@@ -3,25 +3,29 @@ import Sidebar from "./components/sidebar/Sidebar.vue"
 </script>
 
 <template>
-  <div>
-    <Sidebar />
-    <router-view></router-view>
+  <div class="container">
+    <Sidebar class="sidebar" />
+    <router-view class="content"></router-view>
   </div>
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
 }
 
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+.sidebar {
+  width: 200px;
+  height: 100%;
+  background-color: #f0f0f0;
+  flex-shrink: 0;
 }
 
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+.content {
+  flex-grow: 1;
+  padding: 20px;
 }
 </style>
