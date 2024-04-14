@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import Sidebar from "./components/sidebar/Sidebar.vue"
+import Sidebar from './components/sidebar/Sidebar.vue'
+import Toaster from '@/components/ui/toast/Toaster.vue'
 </script>
 
 <template>
-  <div class="container">
+  <Toaster />
+  <div class="gzb-container">
     <Sidebar class="sidebar" />
     <router-view class="content"></router-view>
   </div>
 </template>
 
 <style scoped>
-.container {
+.gzb-container {
   width: 100%;
   height: 100vh;
   display: flex;
@@ -20,12 +22,12 @@ import Sidebar from "./components/sidebar/Sidebar.vue"
 .sidebar {
   width: 200px;
   height: 100%;
-  background-color: #f0f0f0;
+  background-color: #fff;
   flex-shrink: 0;
 }
 
 .content {
   flex-grow: 1;
-  padding: 20px;
+  padding: 20px 20px 20px 40px;
 }
 </style>
