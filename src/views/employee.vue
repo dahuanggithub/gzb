@@ -30,25 +30,32 @@ import {
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
 import EmployeeService from '../services/employee'
-import { Employee, EmployeeNature } from '../models/employee'
+import { Employee, EmployeeNature, EmployeeTitle, EmployeeState, SalaryModel } from '../models/employee'
 import { ref, onMounted, reactive } from 'vue'
 import { Label } from '@/components/ui/label'
 
 const employeeService = new EmployeeService()
 const saveEmployee = () => {
+  console.log(employee)
+  // 创建用户
   const emp = new Employee(1, 'zhangsan', 'caiwu', 'dd', 100000, 200)
   // 使用示例
   // 创建用户
-  employeeService
-    .createEmployee(emp)
-    .then(() => console.log('User created'))
-    .catch((error) => console.error('Failed to create user:', error))
+  // employeeService
+  //   .createEmployee(emp)
+  //   .then(() => console.log('User created'))
+  //   .catch((error) => console.error('Failed to create user:', error))
 }
 const employees = ref([])
 const employee = reactive(new Employee(1, '', '', '', 0, 0))
 const departments = JSON.parse(localStorage.getItem('departments') ?? '[]')
 const employeeNatures = Object.keys(EmployeeNature)
+const employeeTitele = Object.keys(EmployeeTitle)
+const employeeState = Object.keys(EmployeeState)
+const salaryModel = Object.keys(SalaryModel)
+
 console.log(EmployeeNature) // 输出: "Value1", "Value2", "Value3"
 onMounted(async () => {
   getEmployees()
@@ -88,11 +95,7 @@ const getEmployees = async () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem
-                        :value="dep"
-                        v-for="dep in departments"
-                        :key="dep"
-                      >
+                      <SelectItem :value="dep" v-for="dep in departments" :key="dep">
                         {{ dep }}
                       </SelectItem>
                     </SelectGroup>
@@ -100,27 +103,80 @@ const getEmployees = async () => {
                 </Select>
               </div>
               <div class="grid grid-cols-4 items-center gap-4">
-                <Label for="name" class="text-right"> 职务 </Label>
-                <Input id="name" v-model="employee.name" class="col-span-3" />
+                <Label for="position" class="text-right"> 职务 </Label>
+                <Input id="position" v-model="employee.position" class="col-span-3" />
               </div>
               <div class="grid grid-cols-4 items-center gap-4">
                 <Label for="name" class="text-right"> 性质 </Label>
                 <Select class="col-span-3" v-model="employee.nature">
                   <SelectTrigger class="w-[248px]">
-                    <SelectValue placeholder="选择部门" />
+                    <SelectValue placeholder="选择性质" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem
-                        :value="index.toString()"
-                        v-for="(nature, index) in employeeNatures"
-                        :key="index"
-                      >
+                      <SelectItem :value="index.toString()" v-for="(nature, index) in employeeNatures" :key="index">
                         {{ nature }}
                       </SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
+              </div>
+              <div class="grid grid-cols-4 items-center gap-4">
+                <Label for="name" class="text-right"> 状态 </Label>
+                <Select class="col-span-3" v-model="employee.state">
+                  <SelectTrigger class="w-[248px]">
+                    <SelectValue placeholder="选择状态" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem :value="index.toString()" v-for="(status, index) in employeeState" :key="index">
+                        {{ status }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div class="grid grid-cols-4 items-center gap-4">
+                <Label for="name" class="text-right"> 职称 </Label>
+                <Select class="col-span-3" v-model="employee.title">
+                  <SelectTrigger class="w-[248px]">
+                    <SelectValue placeholder="选择职称" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem :value="index.toString()" v-for="(title, index) in employeeTitele" :key="index">
+                        {{ title }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div class="grid grid-cols-4 items-center gap-4">
+                <Label for="name" class="text-right"> 薪资模式 </Label>
+                <Select class="col-span-3" v-model="employee.salaryModel">
+                  <SelectTrigger class="w-[248px]">
+                    <SelectValue placeholder="选择职称" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem :value="index.toString()" v-for="(mode, index) in salaryModel" :key="index">
+                        {{ mode }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div class="grid grid-cols-4 items-center gap-4">
+                <Label for="salary" class="text-right"> 薪资 </Label>
+                <Input id="salary" v-model="employee.salary" class="col-span-3" />
+              </div>
+              <div class="grid grid-cols-4 items-center gap-4">
+                <Label for="salary" class="text-right"> 是否有年休 </Label>
+                <Switch v-model="employee.hasAnnualLeave" class="col-span-3" />
+              </div>
+              <div class="grid grid-cols-4 items-center gap-4">
+                <Label for="salary" class="text-right"> 公积金 </Label>
+                <Input id="salary" v-model="employee.cpf" class="col-span-3" />
               </div>
             </div>
             <SheetFooter>
@@ -150,11 +206,16 @@ const getEmployees = async () => {
         <TableBody>
           <TableRow v-for="employee in employees" :key="employee.id">
             <TableCell class="font-medium">
-              {{ employee.id }}
+              <Button variant="link">{{ employee.id }}</Button>
             </TableCell>
             <TableCell>{{ employee.name }}</TableCell>
             <TableCell>{{ employee.department }}</TableCell>
-            <TableCell></TableCell>
+            <TableCell>{{ employee.duty }}</TableCell>
+            <TableCell>{{ employee.nature }}</TableCell>
+            <TableCell>{{ employee.title }}</TableCell>
+            <TableCell>{{ employee.salary }}</TableCell>
+            <TableCell>{{ employee.providentFund }}</TableCell>
+            <TableCell>{{ employee.hasAnnualLeave }}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
