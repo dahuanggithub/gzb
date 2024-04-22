@@ -38,9 +38,19 @@ import { Label } from '@/components/ui/label'
 
 const employeeService = new EmployeeService()
 const saveEmployee = () => {
-  console.log(employee)
+  console.log(employee.value)
+  let emp = new Employee(1, '', '', '', 0, 0)
+  console.log(emp)
+  emp.id = employee.value.id
+  emp.name = employee.value.name
+  emp.department = employee.value.department
+  emp.position = employee.value.position
+  emp.nature = employee.value.nature
+  emp.state = employee.value.state
+  emp.title = employee.value.title
+  emp.salaryModel = employee.value.salaryModel
+  emp.salary = employee.value.salary
   // 创建用户
-  const emp = new Employee(1, 'zhangsan', 'caiwu', 'dd', 100000, 200)
   // 使用示例
   // 创建用户
   // employeeService
@@ -49,12 +59,12 @@ const saveEmployee = () => {
   //   .catch((error) => console.error('Failed to create user:', error))
 }
 const employees = ref([])
-const employee = reactive(new Employee(1, '', '', '', 0, 0))
+const employee = ref(new Employee(1, '', '', '', 0, 0))
 const departments = JSON.parse(localStorage.getItem('departments') ?? '[]')
-const employeeNatures = Object.keys(EmployeeNature)
-const employeeTitele = Object.keys(EmployeeTitle)
-const employeeState = Object.keys(EmployeeState)
-const salaryModel = Object.keys(SalaryModel)
+const employeeNatures = Object.keys(EmployeeNature).filter(nature => isNaN(Number(nature)))
+const employeeTitele = Object.keys(EmployeeTitle).filter(title => isNaN(Number(title)))
+const employeeState = Object.keys(EmployeeState).filter(state => isNaN(Number(state)))
+const salaryModel = Object.keys(SalaryModel).filter(mode => isNaN(Number(mode)))
 
 console.log(EmployeeNature) // 输出: "Value1", "Value2", "Value3"
 onMounted(async () => {
