@@ -1,5 +1,5 @@
 const objectStoreName = 'employee'
-import { Employee } from '../models/employee'
+import { Employee, EmployeeState } from '../models/employee'
 // 创建用户
 async function creatEmployee(db: IDBDatabase, user: Employee): Promise<void> {
   const tx = db.transaction([objectStoreName], 'readwrite')
@@ -91,6 +91,7 @@ function _toEmployee(result: any): Employee {
     result.position,
     result.salary,
     result.cpf,
+    result.nature,
     result.title,
     result.salaryModel,
     result.hasAnnualLeave,

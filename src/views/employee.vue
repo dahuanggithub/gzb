@@ -59,7 +59,7 @@ const saveEmployee = () => {
   emp.salaryModel = Number(employee.value.salaryModel)
   emp.salary = Number(employee.value.salary)
   emp.cpf = Number(employee.value.cpf)
-
+  emp.hasAnnualLeave = employee.value.hasAnnualLeave
   if (isAppend.value) {
     // 创建用户
     employeeService
@@ -122,7 +122,7 @@ const employeeAppend = () => {
       <Sheet>
         <div class="p-2 text-right">
           <SheetTrigger as-child>
-            <Button @click="">新增员工</Button>
+            <Button @click="employeeAppend">新增员工</Button>
           </SheetTrigger>
           <SheetContent>
             <SheetHeader>
@@ -145,11 +145,7 @@ const employeeAppend = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem
-                        :value="dep"
-                        v-for="dep in departments"
-                        :key="dep"
-                      >
+                      <SelectItem :value="dep" v-for="dep in departments" :key="dep">
                         {{ dep }}
                       </SelectItem>
                     </SelectGroup>
@@ -158,11 +154,7 @@ const employeeAppend = () => {
               </div>
               <div class="grid grid-cols-4 items-center gap-4">
                 <Label for="position" class="text-right">职务</Label>
-                <Input
-                  id="position"
-                  v-model="employee.position"
-                  class="col-span-3"
-                />
+                <Input id="position" v-model="employee.position" class="col-span-3" />
               </div>
               <div class="grid grid-cols-4 items-center gap-4">
                 <Label for="name" class="text-right">性质</Label>
@@ -172,31 +164,8 @@ const employeeAppend = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem
-                        :value="index.toString()"
-                        v-for="(nature, index) in employeeNatures"
-                        :key="index"
-                      >
+                      <SelectItem :value="index" v-for="(nature, index) in employeeNatures" :key="index">
                         {{ nature }}
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div class="grid grid-cols-4 items-center gap-4">
-                <Label for="name" class="text-right">状态</Label>
-                <Select class="col-span-3" v-model="employee.state">
-                  <SelectTrigger class="w-[248px]">
-                    <SelectValue placeholder="选择状态" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem
-                        :value="index.toString()"
-                        v-for="(status, index) in employeeState"
-                        :key="index"
-                      >
-                        {{ status }}
                       </SelectItem>
                     </SelectGroup>
                   </SelectContent>
@@ -210,12 +179,23 @@ const employeeAppend = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem
-                        :value="index.toString()"
-                        v-for="(title, index) in employeeTitele"
-                        :key="index"
-                      >
+                      <SelectItem :value="index" v-for="(title, index) in employeeTitele" :key="index">
                         {{ title }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div class="grid grid-cols-4 items-center gap-4">
+                <Label for="name" class="text-right">状态</Label>
+                <Select class="col-span-3" v-model="employee.state">
+                  <SelectTrigger class="w-[248px]">
+                    <SelectValue placeholder="选择状态" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem :value="index" v-for="(status, index) in employeeState" :key="index">
+                        {{ status }}
                       </SelectItem>
                     </SelectGroup>
                   </SelectContent>
@@ -229,11 +209,7 @@ const employeeAppend = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem
-                        :value="index.toString()"
-                        v-for="(mode, index) in salaryModel"
-                        :key="index"
-                      >
+                      <SelectItem :value="index" v-for="(mode, index) in salaryModel" :key="index">
                         {{ mode }}
                       </SelectItem>
                     </SelectGroup>
@@ -242,19 +218,16 @@ const employeeAppend = () => {
               </div>
               <div class="grid grid-cols-4 items-center gap-4">
                 <Label for="salary" class="text-right">薪资</Label>
-                <Input
-                  id="salary"
-                  v-model="employee.salary"
-                  class="col-span-3"
-                />
-              </div>
-              <div class="grid grid-cols-4 items-center gap-4">
-                <Label for="salary" class="text-right">是否有年休</Label>
-                <Switch v-model="employee.hasAnnualLeave" class="col-span-3" />
+                <Input id="salary" v-model="employee.salary" class="col-span-3" />
               </div>
               <div class="grid grid-cols-4 items-center gap-4">
                 <Label for="salary" class="text-right">公积金</Label>
                 <Input id="salary" v-model="employee.cpf" class="col-span-3" />
+              </div>
+              <div class="grid grid-cols-4 items-center gap-4">
+                <Label for="salary" class="text-right">是否有年休</Label>
+                <Switch :checked="employee.hasAnnualLeave" @update:checked="(e) => employee.hasAnnualLeave = e"
+                        class="col-span-3" />
               </div>
             </div>
             <SheetFooter>
@@ -275,6 +248,7 @@ const employeeAppend = () => {
               <TableHead>职务</TableHead>
               <TableHead>性质</TableHead>
               <TableHead>职称</TableHead>
+              <TableHead>状态</TableHead>
               <TableHead>薪资</TableHead>
               <TableHead>公积金</TableHead>
               <TableHead>是否有年休</TableHead>
@@ -292,13 +266,15 @@ const employeeAppend = () => {
               </TableCell>
               <TableCell>{{ employee.department }}</TableCell>
               <TableCell>{{ employee.position }}</TableCell>
-              <TableCell>{{ employee.nature }}</TableCell>
-              <TableCell>{{ employee.title }}</TableCell>
+              <TableCell>{{ EmployeeNature[employee.nature] }}</TableCell>
+              <TableCell>{{ EmployeeTitle[employee.title] }}</TableCell>
+              <TableCell>{{ EmployeeState[employee.state] }}</TableCell>
               <TableCell>{{ employee.salary }}</TableCell>
               <TableCell>{{ employee.cpf }}</TableCell>
               <TableCell>
-                {{ employee.hasAnnualLeave === '1' ? '有' : '无' }}
+                {{ employee.hasAnnualLeave ? '有' : '无' }}
               </TableCell>
+
             </TableRow>
           </TableBody>
         </Table>
